@@ -1,0 +1,82 @@
+/* --- Global Layout (Ensures footer stays at bottom) --- */
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, sans-serif;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; 
+  background-image: url('./images/BackGround.jpg');
+  background-size: cover;
+  background-attachment: fixed;
+  background-color: #ffc107;
+}
+
+/* --- The Box Structure --- */
+footer {
+  /* 1. Layout & Centering */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  
+  /* 2. Box Positioning (Centers the box and keeps it at the bottom) */
+  margin: auto auto 2rem auto; /* top: auto, sides: auto, bottom: 2rem */
+  max-width: 800px;           /* Prevents it from getting too wide */
+  width: calc(100% - 3rem);   /* Leaves space on left/right for mobile */
+  
+  /* 3. Box Design */
+  padding: 2.5rem 2rem;
+  background-color: #fff9e6;   /* Lighter yellow for a cleaner box */
+  border: 1px solid #ffe08a;   /* Subtle border */
+  border-left: 6px solid #ffc107; /* Thick warning accent line */
+  border-radius: 12px;         /* Rounded corners */
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08); /* Soft drop shadow */
+  
+  /* 4. Text Color */
+  color: #660303; 
+  box-sizing: border-box;
+}
+
+/* --- Typography Styling --- */
+footer h3 {
+  color: #ff0800;
+  margin: 0 0 1rem 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+footer p {
+  margin: 0;
+  line-height: 1.6; 
+  font-size: 0.95rem;
+}
+
+/* --- Highlighted Spans --- */
+footer span {
+  font-weight: 700;
+  color: #0c0ce9; 
+  /* background-color: #ffecb3; Tiny highlight background */
+  padding: 0 4px;
+  border-radius: 4px;
+}
+
+/* --- Responsive Design (Mobile) --- */
+@media (max-width: 600px) {
+  footer {
+    padding: 1.5rem 1rem; 
+    width: calc(100% - 2rem); /* Less margin on small screens */
+    margin-bottom: 1rem;
+    border-radius: 8px;
+  }
+  
+  footer h3 {
+    font-size: 1.1rem;
+  }
+  
+  footer p {
+    font-size: 0.85rem; 
+    line-height: 1.5;
+  }
+}
