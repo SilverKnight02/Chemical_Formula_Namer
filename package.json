@@ -9,7 +9,7 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "predeploy": "npm run build",
-    "deploy": "gh-page -d dist"
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "react": "^19.3.1",
