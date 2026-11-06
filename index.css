@@ -26,10 +26,11 @@ footer {
   width: calc(100% - 3rem);   /* Leaves space on left/right for mobile */
   
   /* 3. Box Design */
-  padding: 2.5rem 2rem;
+  padding: 2.5rem 2rem 0 2rem;
   background-color: #fff9e6;   /* Lighter yellow for a cleaner box */
   border: 1px solid #ffe08a;   /* Subtle border */
-  border-left: 6px solid #ffc107; /* Thick warning accent line */
+  border-left: 6px solid #fe0000; /* Thick warning accent line */
+  border-right: 6px solid #fe0000;
   border-radius: 12px;         /* Rounded corners */
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08); /* Soft drop shadow */
   
@@ -60,6 +61,13 @@ footer span {
   /* background-color: #ffecb3; Tiny highlight background */
   padding: 0 4px;
   border-radius: 4px;
+}
+
+/*---CopyRight---*/
+.copyright {
+  margin-top: 50px;
+  color: rgb(0, 0, 0);
+  font-size: 0.85rem;
 }
 
 /* --- Responsive Design (Mobile) --- */
