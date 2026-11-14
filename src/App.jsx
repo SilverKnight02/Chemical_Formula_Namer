@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { COMPOUNDS } from './data/compounds';
-import { normalize, molarMass } from './utils/formula';
+import { normalize, molarMass, isValidFormula } from './utils/formula';
+import { fetchByFormula } from './utils/pubchem';
 import './App.css';
 
 const EXAMPLES = ['H2O', 'NaCl', 'C2H6O', 'Ca(OH)2', 'C6H12O6'];
@@ -10,33 +11,45 @@ function Formula({ text }) {
   return text.split(/(\d+)/).map((part, i) => (i % 2 ? <sub key={i}>{part}</sub> : part));
 }
 
-// Exact capitals are tried first; if nothing matches, capitals are ignored (h2o -> H2O).
+// Case-sensitive on purpose: CO (carbon monoxide) and Co (cobalt) are different things.
+// Local list first; any other valid formula goes to PubChem.
 function lookup(raw) {
   const f = normalize(raw);
   if (!f) return { status: 'empty' };
-  let canonical = f;
-  let matches = COMPOUNDS.filter((c) => c.formula === f);
-  if (!matches.length) {
-    matches = COMPOUNDS.filter((c) => c.formula.toLowerCase() === f.toLowerCase());
-    if (matches.length) canonical = matches[0].formula;
+  const matches = COMPOUNDS.filter((c) => c.formula === f);
+  if (matches.length) {
+    return { status: 'found', f, mass: molarMass(f), matches };
   }
-  const mass = molarMass(canonical);
-  if (mass === null) return { status: 'invalid', f };
-  return {
-    status: matches.length ? 'found' : 'unknown',
-    f, canonical, mass, matches,
-    corrected: canonical !== f,
-  };
+  if (!isValidFormula(f)) return { status: 'invalid', f };
+  return { status: 'online', f };
 }
 
 export default function App() {
   const [input, setInput] = useState('');
   const result = lookup(input);
 
+  const [online, setOnline] = useState({ state: 'idle', items: [] });
+  const target = result.status === 'online' ? result.f : '';
+
+  useEffect(() => {
+    if (!target) { setOnline({ state: 'idle', items: [] }); return; }
+    const ctrl = new AbortController();
+    setOnline({ state: 'loading', items: [] });
+    const t = setTimeout(async () => {
+      try {
+        const items = await fetchByFormula(target, ctrl.signal);
+        setOnline({ state: items.length ? 'done' : 'none', items });
+      } catch (e) {
+        if (e.name !== 'AbortError') setOnline({ state: 'error', items: [] });
+      }
+    }, 500);
+    return () => { clearTimeout(t); ctrl.abort(); };
+  }, [target]);
+
   return (
     <main className="app">
       <h1>Chemical Formula Namer</h1>
-      <p className="intro">Type a formula to see its name. Subscripts like H₂O work too.</p>
+      <p className="intro">Type a formula to see its name. Subscripts like H₂O work too. Capitals matter: CO is carbon monoxide, Co is cobalt.</p>
 
       <label htmlFor="formula">Formula</label>
       <input
@@ -59,21 +72,39 @@ export default function App() {
       <section aria-live="polite" className="results">
         {result.status === 'invalid' && (
           <p className="note error">
-            Sorry, we don't have “{result.f}” in our database. Check the letters and brackets,
-            and try one of the examples above.
+            “{result.f}” isn't a valid formula. Formulas are case-sensitive: each element
+            starts with a capital letter (Co = cobalt, CO = carbon monoxide). Check the
+            letters and brackets, and try one of the examples above.
           </p>
         )}
-        {result.status === 'unknown' && (
-          <p className="note error">
-            Sorry, we don't have <Formula text={result.canonical} /> in our database yet.
-            (Its molar mass is {result.mass.toFixed(2)} g/mol.)
-          </p>
+        {result.status === 'online' && (
+          <>
+            {online.state === 'loading' && <p className="note">Searching PubChem…</p>}
+            {online.state === 'error' && <p className="note error">Couldn't reach PubChem. Check your internet.</p>}
+            {online.state === 'none' && (
+              <p className="note error">No compound found for <Formula text={result.f} />.</p>
+            )}
+            {online.state === 'done' && (
+              <>
+                <p className="note">From PubChem (showing up to {online.items.length}):</p>
+                <div className="cards">
+                  {online.items.map((p) => (
+                    <article key={p.CID} className="card">
+                      <h2>{p.Title}</h2>
+                      <p className="formula"><Formula text={p.MolecularFormula} /></p>
+                      {p.IUPACName && <p>IUPAC: {p.IUPACName}</p>}
+                      {p.synonyms?.length > 0 && <p>Also known as: {p.synonyms.join(', ')}</p>}
+                      <p>Type: {p.type} (estimated)</p>
+                      <p>Molar mass: {Number(p.MolecularWeight).toFixed(2)} g/mol</p>
+                    </article>
+                  ))}
+                </div>
+              </>
+            )}
+          </>
         )}
         {result.status === 'found' && (
           <>
-            {result.corrected && (
-              <p className="note">Showing results for <Formula text={result.canonical} /></p>
-            )}
             {result.matches.length > 1 && (
               <p className="note">{result.matches.length} compounds share this formula:</p>
             )}
@@ -84,7 +115,7 @@ export default function App() {
                 <p className="formula"><Formula text={c.formula} /></p>
                 {c.common && <p>Also known as: {c.common}</p>}
                 <p>Type: {c.type}</p>
-                <p>Molar mass: {result.mass.toFixed(2)} g/mol</p>
+                {result.mass !== null && <p>Molar mass: {result.mass.toFixed(2)} g/mol</p>}
               </article>
             ))}
             </div>

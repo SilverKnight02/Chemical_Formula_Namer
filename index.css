@@ -41,7 +41,7 @@ footer {
 
 /* --- Typography Styling --- */
 footer h3 {
-  color: #ff0800;
+  color: #0c0ce9;
   margin: 0 0 1rem 0;
   font-size: 1.25rem;
   font-weight: 700;
@@ -52,6 +52,10 @@ footer p {
   margin: 0;
   line-height: 1.6; 
   font-size: 0.95rem;
+}
+
+footer p + p {
+  margin-top: 0.75rem;
 }
 
 /* --- Highlighted Spans --- */

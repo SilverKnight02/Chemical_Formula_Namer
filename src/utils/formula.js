@@ -77,3 +77,26 @@ export function molarMass(f) {
 // console.log(molarMass('Ca(OH)2'));      // 74.093
 // console.log(molarMass('CuSO4'));        // 159.609
 // console.log(molarMass('KMnO4'));        // 158.032
+
+/* ---------------------------------------------------
+   CASE-SENSITIVE VALIDATION
+   Capitals matter: CO = carbon monoxide, Co = cobalt.
+--------------------------------------------------- */
+const ELEMENTS = new Set(('H He Li Be B C N O F Ne Na Mg Al Si P S Cl Ar K Ca Sc Ti V Cr Mn Fe Co Ni Cu Zn Ga Ge As Se Br Kr ' +
+  'Rb Sr Y Zr Nb Mo Tc Ru Rh Pd Ag Cd In Sn Sb Te I Xe Cs Ba La Ce Pr Nd Pm Sm Eu Gd Tb Dy Ho Er Tm Yb Lu Hf Ta W Re Os Ir Pt Au Hg ' +
+  'Tl Pb Bi Po At Rn Fr Ra Ac Th Pa U Np Pu Am Cm Bk Cf Es Fm Md No Lr Rf Db Sg Bh Hs Mt Ds Rg Cn Nh Fl Mc Lv Ts Og').split(' '));
+
+function bracketsOk(s) {
+  let depth = 0;
+  for (const ch of s) {
+    if (ch === '(') depth++;
+    else if (ch === ')' && --depth < 0) return false;
+  }
+  return depth === 0 && !/^[\d)]/.test(s);
+}
+
+// True only if every element is written with correct capitals (e.g. "NaCl", "Co", "CO").
+export function isValidFormula(f) {
+  if (!/^(?:[A-Z][a-z]?|\d+|\(|\))+$/.test(f) || !bracketsOk(f)) return false;
+  return (f.match(/[A-Z][a-z]?/g) || []).every((el) => ELEMENTS.has(el));
+}
