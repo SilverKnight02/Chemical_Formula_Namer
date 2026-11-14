@@ -3,20 +3,29 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Chemical Formula Namer</title>
-    <script type="module" crossorigin src="/Chemical_Formula_Namer/assets/index-CD6qOyzg.js"></script>
-    <link rel="stylesheet" crossorigin href="/Chemical_Formula_Namer/assets/index-C6nforBA.css">
+    <title>Chemical Formula Namer</title>
+    <script type="module" crossorigin src="/Chemical_Formula_Namer/assets/index-BqPIfSme.js"></script>
+    <link rel="stylesheet" crossorigin href="/Chemical_Formula_Namer/assets/index-Dd9fd2fY.css">
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root"></div>
     <footer>
-      <h3>⚠️Development Status: In Progress</h3>
-      <p>Please note that this page is currently a limited preview. It currently supports calculations for approximately<span> 150 common chemical formulas</span>. Given that there are over<span> 200 million</span> known compounds in existence, the current dataset is a fraction of the whole.
-          <br/>In future updates, the completed code will integrate comprehensive databases to fulfill any formula request you have.<br/> <span>Thank you for your patience!😊</span></p>
-          <p class="copyright"></p>
-          <script>
-            document.querySelector('.copyright').textContent ='© ' + new Date().getFullYear() + ' S. Saiparansothi. All rights reserved.';
-          </script>
+      <h3>ℹ️ About this tool</h3>
+      <p>
+        Names and molar masses come from a curated list and the
+        <a href="https://pubchem.ncbi.nlm.nih.gov" target="_blank" rel="noopener">PubChem</a>
+        database (NIH).<br />
+        Formulas are case-sensitive: <span>CO</span> is carbon monoxide,
+        <span>Co</span> is cobalt.
+      </p>
+      <p>
+        💡 <span>Tips:</span> use capitals correctly (NaCl, not nacl). Brackets work, e.g. Ca(OH)<sub>2</sub>.
+        Formulas with many isomers show the first 8 results.
+      </p>
+      <p class="copyright"></p>
+      <script>
+        document.querySelector('.copyright').textContent = '© ' + new Date().getFullYear() + ' S. Saiparansothi. All rights reserved.';
+      </script>
     </footer>
   </body>
 </html>
