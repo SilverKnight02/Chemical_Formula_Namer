@@ -49,7 +49,7 @@ export default function App() {
   return (
     <main className="app">
       <h1>Chemical Formula Namer</h1>
-      <p className="intro">Type a formula to see its name. Subscripts like H₂O work too. Capitals matter: CO is carbon monoxide, Co is cobalt.</p>
+      <p className="intro">Type a formula to see its name. Subscripts like H₂O work too.<br/> <span style={{color:'red'}}>Case-Sensitive: CO is carbon monoxide, Co is cobalt.</span></p>
 
       <label htmlFor="formula">Formula</label>
       <input
